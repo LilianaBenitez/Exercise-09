@@ -10,7 +10,7 @@ library(ggplot2)
 f<-"https://raw.githubusercontent.com/difiore/ada-2024-datasets/main/Street_et_al_2017.csv"
 d<-read_csv(f)
 summary(d)
-library
+library(skimr)
 skim(d)
 
 ```
@@ -66,4 +66,8 @@ summary(mod)
 ```
 The coefficients were different between taxonomic groups, and group size had significant effects on brain size for Strepsirhini and Platyrrhini. I don't know if you could say that they had siginficantly different effects between groups unless you did a t test or something???? You could also maybe look at taxonomic group as an interaction with group size?? I tried to do this with the full model above. Maybe also a post-hoc test
 
-
+```{r}
+library(lmodel2)
+library(broom)
+tidy(m)
+```
