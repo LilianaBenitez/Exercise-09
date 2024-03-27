@@ -1,0 +1,69 @@
+---
+title: "Exercise 9"
+author: "Lili Benitez"
+date: "2024-03-27"
+output: html_document
+---
+```{r}
+library(tidyverse)
+library(ggplot2)
+f<-"https://raw.githubusercontent.com/difiore/ada-2024-datasets/main/Street_et_al_2017.csv"
+d<-read_csv(f)
+summary(d)
+library
+skim(d)
+
+```
+# Plots
+  From this dataset, plot brain size (ECV) as a function of social group size (Group_size), longevity (Longevity), juvenile period length (Weaning), and reproductive lifespan (Repro_lifespan).
+```{r}
+ggplot(aes(x=ECV, y=Group_size), data=d)+
+  geom_point()+
+  geom_smooth(method="lm")
+
+ggplot(aes(x=ECV, y=Longevity), data=d)+
+  geom_point()+
+  geom_smooth(method="lm")
+ggplot(aes(x=ECV, y=Weaning), data=d)+
+  geom_point()+
+  geom_smooth(method="lm")
+ggplot(aes(x=ECV, y=Repro_lifespan), data=d)+
+  geom_point()+
+  geom_smooth(method="lm")
+
+```
+
+```{r}
+d<-d%>%
+  drop_na(ECV)%>%
+  drop_na(Group_size)
+(b1<-cov(d$ECV, d$Group_size)/var(d$Group_size))
+(b0<-mean(d$ECV)-b1*mean(d$Group_size))
+
+m<-lm(ECV~Group_size, data=d)
+summary(m) #look the same
+```
+Repeat the analysis above for three different major radiations of primates - “catarrhines”, “platyrrhines”, and “strepsirhines”) separately. These are stored in the variable Taxonomic_group. Do your regression coefficients differ among groups? How might you determine this?
+
+```{r}
+c<-d%>%
+  filter(Taxonomic_group=="Catarrhini")
+p<-d%>%
+  filter(Taxonomic_group=="Platyrrhini")
+s<-d%>%
+  filter(Taxonomic_group=="Strepsirhini")
+
+(mc<-lm(ECV~Group_size, data=c))
+(mp<-lm(ECV~Group_size, data=p))
+(ms<-lm(ECV~Group_size, data=s))
+
+(summary(mc))
+(summary(ms))
+(summary(mp))
+
+mod<-lm(ECV~Group_size*Taxonomic_group, data=d)
+summary(mod)
+```
+The coefficients were different between taxonomic groups, and group size had significant effects on brain size for Strepsirhini and Platyrrhini. I don't know if you could say that they had siginficantly different effects between groups unless you did a t test or something???? You could also maybe look at taxonomic group as an interaction with group size?? I tried to do this with the full model above. Maybe also a post-hoc test
+
+
